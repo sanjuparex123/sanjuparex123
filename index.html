@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Chat App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <div>
+          <p class="app__status">● Online</p>
+          <h1>Simple Chat</h1>
+        </div>
+        <button class="app__clear" type="button" id="clearChat">Clear</button>
+      </header>
+
+      <section class="chat" aria-live="polite">
+        <ul class="chat__messages" id="chatMessages">
+          <li class="message message--bot">
+            <div class="message__bubble">
+              Hi! I am a friendly bot. Send a message to get started.
+            </div>
+            <span class="message__time">Just now</span>
+          </li>
+        </ul>
+      </section>
+
+      <form class="composer" id="chatForm">
+        <label class="composer__label" for="messageInput">Message</label>
+        <div class="composer__controls">
+          <textarea
+            id="messageInput"
+            name="message"
+            rows="2"
+            placeholder="Type your message..."
+            required
+          ></textarea>
+          <button type="submit">Send</button>
+        </div>
+        <p class="composer__hint">Press Enter to send. Shift+Enter for a new line.</p>
+      </form>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
