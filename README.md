@@ -1,31 +1,40 @@
-# Simple Chat App
+# Vegetable Shop App (with Database Integration)
 
-A lightweight static chat UI with a friendly bot reply for quick demos.
+A full-stack vegetable shop app built with:
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: Python HTTP server (`app.py`)
+- **Database**: SQLite (`sqlite3`, built into Python)
 
-## How to run
+## Features
 
-You can open the file directly, or serve it with a local static server (recommended for consistent behavior).
+- Add vegetables to inventory
+- View inventory from the database
+- Restock or delete items
+- Record purchases (sales)
+- Auto-update stock after purchase
+- View sales summary (units sold + total revenue)
 
-### Option 1: Open directly
-
-Open `index.html` in your browser.
-
-### Option 2: Run a local server
-
-From the project root:
+## Run locally
 
 ```bash
-python -m http.server 8000
+python app.py
 ```
 
-Then open:
+Open: `http://localhost:3000`
 
-```
-http://127.0.0.1:8000
-```
+## API Endpoints
 
-## Usage
+- `GET /api/vegetables`
+- `POST /api/vegetables`
+- `PUT /api/vegetables/:id`
+- `DELETE /api/vegetables/:id`
+- `POST /api/purchase`
+- `GET /api/sales`
 
-- Type a message and press **Enter** to send.
-- Press **Shift+Enter** for a new line.
-- Click **Clear** to reset the conversation.
+## Database
+
+The app creates `shop.db` automatically with:
+- `vegetables` table
+- `sales` table
+
+It also seeds default vegetables on first launch.
