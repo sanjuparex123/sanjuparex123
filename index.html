@@ -3,44 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Chat App</title>
+    <title>Vegetable Shop</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main class="app">
       <header class="app__header">
         <div>
-          <p class="app__status">● Online</p>
-          <h1>Simple Chat</h1>
+          <p class="app__status">● Database Connected</p>
+          <h1>Vegetable Shop Dashboard</h1>
         </div>
-        <button class="app__clear" type="button" id="clearChat">Clear</button>
+        <button type="button" id="refreshBtn">Refresh</button>
       </header>
 
-      <section class="chat" aria-live="polite">
-        <ul class="chat__messages" id="chatMessages">
-          <li class="message message--bot">
-            <div class="message__bubble">
-              Hi! I am a friendly bot. Send a message to get started.
-            </div>
-            <span class="message__time">Just now</span>
-          </li>
-        </ul>
+      <p class="app__message" id="messageBar">Ready.</p>
+
+      <section class="panel">
+        <h2>Add Vegetable</h2>
+        <form id="addForm" class="grid-form">
+          <input name="name" placeholder="Name" required />
+          <input name="category" placeholder="Category" required />
+          <input name="price" type="number" step="0.01" min="0" placeholder="Price" required />
+          <input name="stock" type="number" min="0" placeholder="Stock" required />
+          <button type="submit">Add</button>
+        </form>
       </section>
 
-      <form class="composer" id="chatForm">
-        <label class="composer__label" for="messageInput">Message</label>
-        <div class="composer__controls">
-          <textarea
-            id="messageInput"
-            name="message"
-            rows="2"
-            placeholder="Type your message..."
-            required
-          ></textarea>
-          <button type="submit">Send</button>
+      <section class="panel">
+        <h2>Purchase</h2>
+        <form id="purchaseForm" class="grid-form grid-form--purchase">
+          <select id="vegetableSelect" name="vegetableId" required></select>
+          <input name="quantity" type="number" min="1" placeholder="Quantity" required />
+          <button type="submit">Complete Sale</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Inventory</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryBody"></tbody>
+          </table>
         </div>
-        <p class="composer__hint">Press Enter to send. Shift+Enter for a new line.</p>
-      </form>
+      </section>
+
+      <section class="panel">
+        <h2>Sales</h2>
+        <div class="sales-summary" id="salesSummary"></div>
+        <ul id="salesList" class="sales-list"></ul>
+      </section>
     </main>
 
     <script src="script.js"></script>
