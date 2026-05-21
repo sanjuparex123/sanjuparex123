@@ -1,0 +1,40 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum PurchaseOrderStatus { DRAFT ORDERED PARTIALLY_RECEIVED RECEIVED CANCELLED }
+enum MovementType { ADJUSTMENT TRANSFER_IN TRANSFER_OUT RECEIVING SALE RETURN }
+enum NotificationType { LOW_STOCK OVERSTOCK PO_DELAYED SYSTEM }
+enum Role { OWNER ADMIN MANAGER STAFF }
+
+model Shop {
+  id String @id @default(cuid())
+  shopDomain String @unique
+  accessToken String
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  users User[]
+  sessions Session[]
+  suppliers Supplier[]
+  vendors Vendor[]
+  purchaseOrders PurchaseOrder[]
+  inventories Inventory[]
+  forecasts Forecast[]
+  notifications Notification[]
+  auditLogs AuditLog[]
+  @@index([shopDomain, isActive])
+}
+
+model User { id String @id @default(cuid()) shopId String email String name String role Role @default(STAFF) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? shop Shop @relation(fields:[shopId], references:[id]) @@unique([shopId,email]) @@index([shopId, role]) }
+model Session { id String @id @default(cuid()) shopId String state String @unique expiresAt DateTime accessToken String shop Shop @relation(fields:[shopId], references:[id]) @@index([shopId, expiresAt]) }
+model Supplier { id String @id @default(cuid()) shopId String name String company String? email String? phone String? gstNumber String? address String? leadTimeDays Int @default(7) currency String @default("USD") notes String? performanceScore Float @default(0) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? shop Shop @relation(fields:[shopId], references:[id]) purchaseOrders PurchaseOrder[] @@index([shopId,name]) }
+model Vendor { id String @id @default(cuid()) shopId String name String email String? phone String? notes String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? shop Shop @relation(fields:[shopId], references:[id]) purchaseOrders PurchaseOrder[] @@index([shopId,name]) }
+model PurchaseOrder { id String @id @default(cuid()) shopId String poNumber String supplierId String vendorId String? locationId String? notes String? expectedDeliveryDate DateTime? tax Decimal @default(0) shipping Decimal @default(0) discount Decimal @default(0) totalCost Decimal @default(0) status PurchaseOrderStatus @default(DRAFT) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? shop Shop @relation(fields:[shopId], references:[id]) supplier Supplier @relation(fields:[supplierId], references:[id]) vendor Vendor? @relation(fields:[vendorId], references:[id]) items PurchaseOrderItem[] @@unique([shopId,poNumber]) @@index([shopId,status]) }
+model PurchaseOrderItem { id String @id @default(cuid()) purchaseOrderId String productId String variantId String sku String barcode String? quantityOrdered Int quantityReceived Int @default(0) costPrice Decimal tax Decimal @default(0) total Decimal purchaseOrder PurchaseOrder @relation(fields:[purchaseOrderId], references:[id]) @@index([purchaseOrderId, sku]) }
+model Inventory { id String @id @default(cuid()) shopId String productId String variantId String sku String barcode String? locationId String onHand Int @default(0) available Int @default(0) committed Int @default(0) incoming Int @default(0) averageCost Decimal @default(0) stockValue Decimal @default(0) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt deletedAt DateTime? shop Shop @relation(fields:[shopId], references:[id]) movements InventoryMovement[] @@unique([shopId,variantId,locationId]) @@index([shopId,sku]) }
+model InventoryMovement { id String @id @default(cuid()) shopId String inventoryId String type MovementType quantity Int reason String? referenceId String? createdAt DateTime @default(now()) inventory Inventory @relation(fields:[inventoryId], references:[id]) @@index([shopId,type,createdAt]) }
+model Forecast { id String @id @default(cuid()) shopId String productId String variantId String locationId String avgDailySales Float safetyStock Int reorderPoint Int suggestedOrderQty Int leadTimeDays Int seasonalFactor Float @default(1) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt shop Shop @relation(fields:[shopId], references:[id]) @@index([shopId, variantId]) }
+model Notification { id String @id @default(cuid()) shopId String type NotificationType title String message String read Boolean @default(false) createdAt DateTime @default(now()) shop Shop @relation(fields:[shopId], references:[id]) @@index([shopId, read, createdAt]) }
+model AuditLog { id String @id @default(cuid()) shopId String userId String? action String entity String entityId String metadata Json? createdAt DateTime @default(now()) shop Shop @relation(fields:[shopId], references:[id]) @@index([shopId, entity, createdAt]) }

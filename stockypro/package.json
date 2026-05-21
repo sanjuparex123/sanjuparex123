@@ -1,0 +1,14 @@
+{
+  "name": "stockypro",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "npm --workspace @stockypro/web run dev",
+    "dev:api": "npm --workspace @stockypro/api run dev",
+    "build": "npm run build -ws",
+    "lint": "npm run lint -ws",
+    "typecheck": "npm run typecheck -ws"
+  },
+  "devDependencies": {"concurrently":"^9.0.1"}
+}
